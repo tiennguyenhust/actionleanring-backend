@@ -17,6 +17,20 @@ topic_data = pd.read_csv("data/topic_data.csv")
 def hello():
     return {"message":"Hello Sherlock"}
 
+@app.get('/top_10_clusters')
+async def top_10_clusters():
+    top_10_labels = [0, 3, 2, 5, 34, 33, 18, 22, 12, 41]
+    LDA_model = joblib.load('models/LDA_models_50.pkl')
+    
+    results = [str(top_10_words(LDA_model, label)) for label in top_10_labels]
+    res = "-".join(results)
+    return res
+
+@app.get('/get_score')
+async def get_score(text: str):
+    scores = calculate_score(text)
+    res = str(list(scores.values())).strip('[]')
+    return res
 
 @app.get('/similar_tickets')
 async def similar_tickets(label: int, nb_tickets: int):
